@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 dotenvy = "0.15.6"
-mongodb = "2.1.0"
+mongodb = { version = "2.1.0", default-features = false, features = ["sync"] }

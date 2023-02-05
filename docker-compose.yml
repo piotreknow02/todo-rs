@@ -24,5 +24,15 @@ services:
     networks:
       - todo-rs
 
+  admin:
+    image: mongo-express:latest
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=database
+    ports:
+      - 8081:8081
+    networks:
+      - todo-rs
+
 networks:
   todo-rs:
