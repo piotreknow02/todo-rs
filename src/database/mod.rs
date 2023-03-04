@@ -13,8 +13,8 @@ pub struct DbRepo {
 impl DbRepo {
     pub fn connect() -> Self {
         let conf = Config::from_env();
-        let connection_str = conf.get_connection_str();
-        let client = Client::with_uri_str(connection_str).unwrap();
+        let client_opitons = conf.get_db_client_options();
+        let client = Client::with_options(client_opitons).unwrap();
         let db = client.database("todo");
         let col: Collection<Item> = db.collection("Item");
         Self{collection: col}
@@ -25,7 +25,7 @@ impl DbRepo {
             .collection
             .find(None, None)
             .ok()
-            .expect("Error getting items");
+            .unwrap();
         Ok(items.map(|i| i.unwrap()).collect())
     }
 
@@ -34,7 +34,7 @@ impl DbRepo {
             .collection
             .insert_one(item, None)
             .ok()
-            .expect("Error inserting item");
+            .unwrap();
         Ok(inserted_doc)
     }
 
@@ -50,7 +50,7 @@ impl DbRepo {
             .collection
             .update_one(filter, new_doc, None)
             .ok()
-            .expect("Error updating item");
+            .unwrap();
         Ok(updated_doc)
     }
 
@@ -61,7 +61,7 @@ impl DbRepo {
             .collection
             .delete_one(filter, None)
             .ok()
-            .expect("Error removing item");
+            .unwrap();
         Ok(deleted_doc)
     }
 }

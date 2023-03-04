@@ -1,5 +1,7 @@
 use std::env;
 
+use mongodb::options::{ServerAddress, ClientOptions, Credential};
+
 pub struct Config {
     db_user: String,
     db_password: String,
@@ -15,7 +17,15 @@ impl Config {
         }
     }
     
-    pub fn get_connection_str(&self) -> String {
-        format!("mongodb://{:?}:{:?}@{:?}/todo", self.db_user.as_str(), self.db_password.as_str(), self.db_host.as_str())
+    pub fn get_db_client_options(&self) -> ClientOptions {
+        let credentials = Credential::builder()
+            .username(self.db_user.to_owned())
+            .password(self.db_password.to_owned())
+            .build();
+        let client_options = ClientOptions::builder()
+            .hosts(vec![ServerAddress::Tcp { host: self.db_host.to_owned(), port: Some(27017) }])
+            .credential(credentials)
+            .build();
+        return client_options;
     }
 }
